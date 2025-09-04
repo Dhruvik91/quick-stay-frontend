@@ -4,10 +4,25 @@ import { useState } from "react";
 import { SearchInput } from "./SearchInput";
 import { ResultsArea } from "./ResultsArea";
 import { SuggestionCards } from "./SuggestionCards";
+import { FilterPanel } from "./FilterPanel";
 import { useSearch } from "@/hooks/useSearch";
 
 export function SearchContainer() {
-  const { searchState, searchAccommodations, clearSearch } = useSearch();
+  const {
+    searchState,
+    searchAccommodations,
+    clearSearch,
+    updateFilters,
+    results,
+    totalResults,
+    isLoading,
+    error,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    refetch,
+  } = useSearch();
+
   const [inputValue, setInputValue] = useState("");
 
   const handleSearch = async (query: string) => {
@@ -20,40 +35,66 @@ export function SearchContainer() {
     clearSearch();
   };
 
+  const handleFiltersChange = (filters: any) => {
+    updateFilters(filters);
+  };
+
+  const handleClearFilters = () => {
+    updateFilters({});
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <header className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gradient mb-4">
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+              Live Search with Real-time Results
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6">
             Find Your Perfect Stay
           </h1>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+          <p className="text-text-secondary text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
             Discover PG accommodations, rentals, hostels, and co-living spaces
-            tailored to your needs
+            tailored to your needs with our advanced search and filtering system
           </p>
         </header>
 
         {/* Search Section */}
-        <div className="max-w-3xl mx-auto mb-12">
+        <div className="max-w-4xl mx-auto mb-12">
           <SearchInput
             value={inputValue}
             onChange={setInputValue}
             onSearch={handleSearch}
             onClear={handleClear}
-            isLoading={searchState.isLoading}
+            isLoading={isLoading}
             placeholder="Search for PG, hostels, co-living spaces..."
           />
         </div>
 
         {/* Results or Suggestions */}
         {searchState.hasSearched ? (
-          <ResultsArea
-            results={searchState.results}
-            isLoading={searchState.isLoading}
-            error={searchState.error}
-            query={searchState.query}
-          />
+          <div className="space-y-6">
+            <FilterPanel
+              filters={searchState.filters}
+              onFiltersChange={handleFiltersChange}
+              onClearFilters={handleClearFilters}
+            />
+            <ResultsArea
+              results={results}
+              totalResults={totalResults}
+              isLoading={isLoading}
+              error={error}
+              query={searchState.query}
+              hasNextPage={hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              fetchNextPage={fetchNextPage}
+              refetch={refetch}
+            />
+          </div>
         ) : (
           <SuggestionCards onSuggestionClick={handleSearch} />
         )}
