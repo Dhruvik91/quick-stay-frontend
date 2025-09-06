@@ -68,10 +68,10 @@ export function AccommodationCard({
     >
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
-        {accommodation.imageUrl && !imageError ? (
+        {accommodation.image_url && !imageError ? (
           <>
             <img
-              src={accommodation.imageUrl}
+              src={accommodation.image_url}
               alt={`${accommodation.name} accommodation`}
               className={cn(
                 "w-full h-full object-cover transition-all duration-500",
@@ -115,30 +115,33 @@ export function AccommodationCard({
         {/* Header */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-text-primary group-hover:text-primary transition-colors duration-200">
-            {accommodation.name}
-          </h3>
-          <span
-            className={cn(
-              "px-2 py-1 rounded-full text-xs font-medium border",
-              getTypeColor(accommodation.type)
-            )}
-          >
-            {accommodation.type}
-          </span>
+            <h3 className="text-xl font-semibold text-text-primary group-hover:text-primary transition-colors duration-200">
+              {accommodation.name}
+            </h3>
+            <span
+              className={cn(
+                "px-2 py-1 rounded-full text-xs font-medium border",
+                getTypeColor(accommodation.type)
+              )}
+            >
+              {accommodation.type}
+            </span>
           </div>
-         
 
           <div className="flex items-center text-text-secondary">
             <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
             <span className="text-sm">{accommodation.address}</span>
           </div>
 
-          {/* Owner Information */}
-          {accommodation.owner && (
+          {/* Contact Information */}
+          {(accommodation.email || accommodation.phone) && (
             <div className="flex items-center text-text-secondary">
               <User className="h-4 w-4 mr-2 flex-shrink-0" />
-              <span className="text-sm">Owner: {accommodation.owner}</span>
+              <span className="text-sm">
+                {accommodation.phone && `Phone: ${accommodation.phone}`}
+                {accommodation.phone && accommodation.email && " • "}
+                {accommodation.email && `Email: ${accommodation.email}`}
+              </span>
             </div>
           )}
 
@@ -187,11 +190,11 @@ export function AccommodationCard({
         </div>
 
         {/* Contact Actions */}
-        {accommodation.contact && (
+        {(accommodation.phone || accommodation.email) && (
           <div className="flex space-x-2 pt-2 mt-auto">
-            {accommodation.contact.phone && (
+            {accommodation.phone && (
               <a
-                href={`tel:${accommodation.contact.phone}`}
+                href={`tel:${accommodation.phone}`}
                 className={cn(
                   "flex-1 flex items-center justify-center space-x-2 py-2 px-4",
                   "bg-primary/10 text-primary rounded-lg border border-primary/20",
@@ -205,9 +208,9 @@ export function AccommodationCard({
               </a>
             )}
 
-            {accommodation.contact.email && (
+            {accommodation.email && (
               <a
-                href={`mailto:${accommodation.contact.email}`}
+                href={`mailto:${accommodation.email}`}
                 className={cn(
                   "flex-1 flex items-center justify-center space-x-2 py-2 px-4",
                   "bg-secondary/10 text-secondary rounded-lg border border-secondary/20",

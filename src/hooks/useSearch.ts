@@ -1,123 +1,151 @@
-"use client";
-
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  AccommodationSearchParams,
+  AccommodationSearchResponse,
+  Accommodation,
+  SearchState,
+} from "@/types/accommodation";
 import httpService from "@/lib/httpService";
-import { Accommodation } from "@/types/accommodation";
+import { API_CONFIG } from "@/constants";
 
+// Extended SearchFilters interface to match what the components expect
 export interface SearchFilters {
   type?: "PG" | "Rental" | "Hostel" | "Co-living";
   verified?: boolean;
   minPrice?: number;
   maxPrice?: number;
-  search?: string;
+  location?: string;
+  amenities?: string[];
 }
 
-export interface SearchState {
-  query: string;
-  filters: SearchFilters;
-  isLoading: boolean;
-  error: string | null;
-  hasSearched: boolean;
+interface UseAccommodationSearchOptions {
+  searchParams: AccommodationSearchParams;
+  enabled?: boolean;
 }
 
-interface UsersResponse {
-  users: Accommodation[];
-  total: number;
-}
+export const useAccommodationSearch = ({
+  searchParams,
+  enabled = true,
+}: UseAccommodationSearchOptions) => {
+  return useInfiniteQuery({
+    queryKey: ["accommodations", searchParams],
+    queryFn: async ({ pageParam = 0 }) => {
+      const params = {
+        ...searchParams,
+        offset: pageParam,
+        limit: searchParams.limit || 10,
+      };
 
-const ITEMS_PER_PAGE = 12;
+      // Remove undefined values
+      const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(([_, value]) => value !== undefined)
+      );
 
-export function useSearch() {
+      const response = await httpService.get<AccommodationSearchResponse>(
+        API_CONFIG.path.users,
+        { params: cleanParams }
+      );
+
+      return response.data;
+    },
+    getNextPageParam: (lastPage: any) => {
+      const { pagination } = lastPage.data;
+      return pagination.hasMore
+        ? pagination.offset + pagination.limit
+        : undefined;
+    },
+    initialPageParam: 0,
+    enabled,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+// Helper hook to get flattened results
+export const useAccommodationSearchResults = (
+  options: UseAccommodationSearchOptions
+) => {
+  const query = useAccommodationSearch(options);
+
+  const accommodations: Accommodation[] =
+    query.data?.pages.flatMap((page: any) => page.data.users) ?? [];
+
+  const totalCount = query.data?.pages[0]?.data.pagination.total ?? 0;
+  const hasNextPage = query.hasNextPage;
+  const isFetchingNextPage = query.isFetchingNextPage;
+
+  return {
+    ...query,
+    accommodations,
+    totalCount,
+    hasNextPage,
+    isFetchingNextPage,
+  };
+};
+
+// Main useSearch hook that integrates with the search components
+export const useSearch = () => {
   const [searchState, setSearchState] = useState<SearchState>({
     query: "",
-    filters: {},
+    results: [],
     isLoading: false,
     error: null,
     hasSearched: false,
+    filters: {},
   });
 
+  const [filters, setFilters] = useState<SearchFilters>({});
+
+  // Convert filters to search params
+  const searchParams: AccommodationSearchParams = useMemo(
+    () => ({
+      search: searchState.query || undefined,
+      type: filters.type,
+      verified: filters.verified,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      limit: 10,
+    }),
+    [searchState.query, filters]
+  );
+
+  // Use the accommodation search hook
   const {
-    data,
-    fetchNextPage,
+    accommodations,
+    totalCount,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
     error,
+    fetchNextPage,
     refetch,
-  } = useInfiniteQuery<UsersResponse>({
-    queryKey: ["users", searchState.query, searchState.filters],
-    initialPageParam: 0,
-    queryFn: async ({ pageParam = 0 }) => {
-      const params = new URLSearchParams();
-
-      // Add search query
-      if (searchState.query.trim()) {
-        params.append("search", searchState.query.trim());
-      }
-
-      // Add filters
-      if (searchState.filters.type) {
-        params.append("type", searchState.filters.type);
-      }
-      if (searchState.filters.verified !== undefined) {
-        params.append("verified", searchState.filters.verified.toString());
-      }
-      if (searchState.filters.minPrice !== undefined) {
-        params.append("minPrice", searchState.filters.minPrice.toString());
-      }
-      if (searchState.filters.maxPrice !== undefined) {
-        params.append("maxPrice", searchState.filters.maxPrice.toString());
-      }
-
-      // Add pagination
-      params.append("limit", ITEMS_PER_PAGE.toString());
-      params.append(
-        "offset",
-        ((pageParam as number) * ITEMS_PER_PAGE).toString()
-      );
-
-      const response = await httpService.get<UsersResponse>(
-        `/api/users?${params.toString()}`
-      );
-      return response.data.data;
-    },
-    getNextPageParam: (lastPage: UsersResponse, allPages) => {
-      const totalPages = Math.ceil(lastPage.total / ITEMS_PER_PAGE);
-      const nextPage = allPages.length;
-      return nextPage < totalPages ? nextPage : undefined;
-    },
-    enabled: searchState.hasSearched,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (replaced cacheTime with gcTime)
+  } = useAccommodationSearchResults({
+    searchParams,
+    enabled:
+      typeof window !== "undefined" &&
+      searchState.hasSearched &&
+      searchState.query.length > 0,
   });
 
-  const searchAccommodations = useCallback(
-    async (query: string, filters: SearchFilters = {}) => {
-      if (!query.trim() && Object.keys(filters).length === 0) {
-        setSearchState((prev) => ({
-          ...prev,
-          query: "",
-          filters: {},
-          hasSearched: false,
-        }));
-        return;
-      }
-
+  // Update search state when query results change
+  useEffect(() => {
+    if (searchState.hasSearched) {
       setSearchState((prev) => ({
         ...prev,
-        query: query.trim(),
-        filters,
-        hasSearched: true,
+        results: accommodations,
+        isLoading,
+        error: error?.message || null,
       }));
-    },
-    []
-  );
+    }
+  }, [accommodations, isLoading, error, searchState.hasSearched]);
 
-  const updateFilters = useCallback((filters: Partial<SearchFilters>) => {
+  const searchAccommodations = useCallback(async (query: string) => {
     setSearchState((prev) => ({
       ...prev,
-      filters: { ...prev.filters, ...filters },
+      query,
+      isLoading: true,
+      error: null,
       hasSearched: true,
     }));
   }, []);
@@ -125,24 +153,26 @@ export function useSearch() {
   const clearSearch = useCallback(() => {
     setSearchState({
       query: "",
-      filters: {},
+      results: [],
       isLoading: false,
       error: null,
       hasSearched: false,
+      filters: {},
     });
+    setFilters({});
   }, []);
 
-  // Flatten all pages data
-  const allResults = data?.pages.flatMap((page) => page.users) || [];
-  const totalResults = data?.pages[0]?.total || 0;
+  const updateFilters = useCallback((newFilters: Partial<SearchFilters>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters }));
+  }, []);
 
   return {
-    searchState,
+    searchState: { ...searchState, filters },
     searchAccommodations,
-    updateFilters,
     clearSearch,
-    results: allResults,
-    totalResults,
+    updateFilters,
+    results: accommodations,
+    totalResults: totalCount,
     isLoading,
     error: error?.message || null,
     hasNextPage,
@@ -150,4 +180,56 @@ export function useSearch() {
     fetchNextPage,
     refetch,
   };
-}
+};
+
+// Example usage:
+/*
+const MyComponent = () => {
+  const searchParams: AccommodationSearchParams = {
+    type: 'PG',
+    verified: true,
+    minPrice: 10000,
+    maxPrice: 20000,
+    search: 'bangalore',
+    limit: 10
+  };
+
+  const {
+    accommodations,
+    totalCount,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+    fetchNextPage
+  } = useAccommodationSearchResults({ searchParams });
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <div>Total: {totalCount} accommodations</div>
+      {accommodations.map(accommodation => (
+        <div key={accommodation.id}>
+          <h3>{accommodation.name}</h3>
+          <p>{accommodation.address}</p>
+          <p>Price: ₹{accommodation.price}</p>
+          <p>Rating: {accommodation.rating}/5</p>
+        </div>
+      ))}
+      {hasNextPage && (
+        <button onClick={handleLoadMore} disabled={isFetchingNextPage}>
+          {isFetchingNextPage ? 'Loading...' : 'Load More'}
+        </button>
+      )}
+    </div>
+  );
+};
+*/

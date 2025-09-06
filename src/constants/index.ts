@@ -1,10 +1,11 @@
-import { Accommodation } from "./interface";
+import { Accommodation } from "@/types/accommodation";
 
 export const API_CONFIG = {
   baseUrl: process.env.NEXT_PUBLIC_API_URL,
   path: {
-    users: "/users"
-  }
+    users: "/users",
+    accommodations: "/accommodations",
+  },
 };
 
 export const dummyAccommodations: Accommodation[] = [
@@ -17,14 +18,17 @@ export const dummyAccommodations: Accommodation[] = [
     rating: 4.7,
     description:
       "Modern co-living space with fully furnished rooms, high-speed internet, and regular community events. Perfect for working professionals.",
-    imageUrl:
+    image_url:
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     verified: true,
     amenities: ["WiFi", "Parking", "Food", "Gym", "AC", "Security"],
-    contact: {
-      phone: "+91 9876543210",
-      email: "urbannest@example.com",
-    },
+    email: "urbannest@example.com",
+    phone: "+91 9876543210",
+    is_active: true,
+    is_deleted: false,
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    deleted_at: "",
   },
   {
     id: "2",
@@ -35,13 +39,17 @@ export const dummyAccommodations: Accommodation[] = [
     rating: 4.3,
     description:
       "Comfortable PG accommodation with homely food and friendly environment. Suitable for students and young professionals.",
-    imageUrl:
+    image_url:
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     verified: true,
     amenities: ["WiFi", "Food", "AC", "Security"],
-    contact: {
-      phone: "+91 8765432109",
-    },
+    phone: "+91 8765432109",
+    email: "",
+    is_active: true,
+    is_deleted: false,
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    deleted_at: "",
   },
   {
     id: "3",
@@ -52,13 +60,17 @@ export const dummyAccommodations: Accommodation[] = [
     rating: 4.5,
     description:
       "Spacious 2BHK apartment in prime location with modern amenities and close to metro station.",
-    imageUrl:
+    image_url:
       "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     verified: false,
     amenities: ["Parking", "AC", "Security"],
-    contact: {
-      email: "metroheights@example.com",
-    },
+    email: "metroheights@example.com",
+    phone: "",
+    is_active: true,
+    is_deleted: false,
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    deleted_at: "",
   },
   {
     id: "4",
@@ -69,14 +81,17 @@ export const dummyAccommodations: Accommodation[] = [
     rating: 4.2,
     description:
       "Affordable hostel accommodation for students with study rooms and 24/7 security.",
-    imageUrl:
+    image_url:
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     verified: true,
     amenities: ["WiFi", "Food", "Security"],
-    contact: {
-      phone: "+91 7654321098",
-      email: "studenthub@example.com",
-    },
+    email: "studenthub@example.com",
+    phone: "+91 7654321098",
+    is_active: true,
+    is_deleted: false,
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    deleted_at: "",
   },
   {
     id: "5",
@@ -84,15 +99,20 @@ export const dummyAccommodations: Accommodation[] = [
     type: "PG",
     address: "22 Cross Street, Chennai, Tamil Nadu",
     price: 14500,
+    rating: 4.4,
     description:
       "Premium PG accommodation with AC rooms and modern facilities for working professionals.",
-    imageUrl:
+    image_url:
       "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     verified: false,
     amenities: ["WiFi", "Food", "AC", "Gym", "Security"],
-    contact: {
-      phone: "+91 6543210987",
-    },
+    email: "",
+    phone: "+91 6543210987",
+    is_active: true,
+    is_deleted: false,
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    deleted_at: "",
   },
   {
     id: "6",
@@ -103,10 +123,16 @@ export const dummyAccommodations: Accommodation[] = [
     rating: 4.8,
     description:
       "Luxurious 3BHK apartment with panoramic city views and premium amenities in the heart of the city.",
+    image_url:
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
     verified: true,
     amenities: ["Parking", "AC", "Gym", "Security"],
-    contact: {
-      email: "citycenter@example.com",
-    },
+    email: "citycenter@example.com",
+    phone: "",
+    is_active: true,
+    is_deleted: false,
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    deleted_at: "",
   },
 ];
