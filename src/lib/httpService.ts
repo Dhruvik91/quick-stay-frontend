@@ -18,7 +18,7 @@ class HttpService {
     this.axiosInstance.interceptors.request.use(
       (config) => {
         // Add authentication token if available
-        const token = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+        const token = process.env.NEXT_PUBLIC_SECRET_KEY;
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }

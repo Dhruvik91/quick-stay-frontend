@@ -62,12 +62,12 @@ export function AccommodationCard({
         "glass-card rounded-xl overflow-hidden transition-all duration-300",
         "hover:scale-[1.02] hover:shadow-glass group animate-slide-up",
         "focus-within:ring-2 focus-within:ring-primary/50",
-        "h-full flex flex-col"
+        "h-full flex flex-col touch-manipulation"
       )}
       style={{ animationDelay: `${animationDelay}s` }}
     >
       {/* Image Section */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-40 sm:h-48 overflow-hidden">
         {accommodation.image_url && !imageError ? (
           <>
             <img
@@ -92,35 +92,41 @@ export function AccommodationCard({
         )}
 
         {/* Overlay badges */}
-        <div className="absolute top-4 left-4 flex space-x-2 z-10">
+        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex space-x-2 z-10">
           {accommodation.verified && (
             <span className="px-2 py-1 rounded-full text-xs font-medium bg-success/90 text-success border border-success/20 flex items-center space-x-1">
               <Shield className="h-3 w-3 text-white" />
-              <span className="text-white">Verified</span>
+              <span className="text-white hidden sm:inline">Verified</span>
+              <span className="text-white sm:hidden">✓</span>
             </span>
           )}
         </div>
 
         {accommodation.price && (
-          <div className="absolute top-4 right-4 px-3 py-1 bg-background/80 backdrop-blur-sm rounded-full z-10">
-            <span className="text-sm font-semibold text-text-primary">
-              {formatPrice(accommodation.price)}/month
+          <div className="absolute top-3 sm:top-4 right-3 sm:right-4 px-2 sm:px-3 py-1 bg-background/80 backdrop-blur-sm rounded-full z-10">
+            <span className="text-xs sm:text-sm font-semibold text-text-primary">
+              <span className="hidden sm:inline">
+                {formatPrice(accommodation.price)}/month
+              </span>
+              <span className="sm:hidden">
+                {formatPrice(accommodation.price)}
+              </span>
             </span>
           </div>
         )}
       </div>
 
       {/* Content Section */}
-      <div className="p-6 space-y-4 flex-1 flex flex-col">
+      <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 flex-1 flex flex-col">
         {/* Header */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-text-primary group-hover:text-primary transition-colors duration-200">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-lg sm:text-xl font-semibold text-text-primary group-hover:text-primary transition-colors duration-200 leading-tight">
               {accommodation.name}
             </h3>
             <span
               className={cn(
-                "px-2 py-1 rounded-full text-xs font-medium border",
+                "px-2 py-1 rounded-full text-xs font-medium border flex-shrink-0",
                 getTypeColor(accommodation.type)
               )}
             >
@@ -128,16 +134,18 @@ export function AccommodationCard({
             </span>
           </div>
 
-          <div className="flex items-center text-text-secondary">
-            <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-            <span className="text-sm">{accommodation.address}</span>
+          <div className="flex items-start text-text-secondary">
+            <MapPin className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
+            <span className="text-sm leading-relaxed">
+              {accommodation.address}
+            </span>
           </div>
 
           {/* Contact Information */}
           {(accommodation.email || accommodation.phone) && (
-            <div className="flex items-center text-text-secondary">
-              <User className="h-4 w-4 mr-2 flex-shrink-0" />
-              <span className="text-sm">
+            <div className="flex items-start text-text-secondary">
+              <User className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
+              <span className="text-sm leading-relaxed">
                 {accommodation.phone && `Phone: ${accommodation.phone}`}
                 {accommodation.phone && accommodation.email && " • "}
                 {accommodation.email && `Email: ${accommodation.email}`}
@@ -165,26 +173,32 @@ export function AccommodationCard({
         )}
 
         {/* Amenities */}
-        <div className="flex flex-wrap gap-2 mt-auto">
-          {accommodation.amenities.slice(0, 4).map((amenity) => {
+        <div className="flex flex-wrap gap-1 sm:gap-2 mt-auto">
+          {accommodation.amenities.slice(0, 3).map((amenity) => {
             const Icon = amenityIcons[amenity];
             return (
               <span
                 key={amenity}
-                className="px-3 py-1 bg-background/50 rounded-full text-xs text-text-secondary border border-border/50 flex items-center space-x-1"
+                className="px-2 sm:px-3 py-1 bg-background/50 rounded-full text-xs text-text-secondary border border-border/50 flex items-center space-x-1"
               >
                 {Icon && typeof Icon === "function" ? (
                   <Icon className="h-3 w-3" />
                 ) : typeof Icon === "string" ? (
                   <span className="text-xs">{Icon}</span>
                 ) : null}
-                <span>{amenity}</span>
+                <span className="hidden sm:inline">{amenity}</span>
+                <span className="sm:hidden">{amenity.charAt(0)}</span>
               </span>
             );
           })}
-          {accommodation.amenities.length > 4 && (
-            <span className="px-3 py-1 bg-primary/10 rounded-full text-xs text-primary border border-primary/20">
-              +{accommodation.amenities.length - 4} more
+          {accommodation.amenities.length > 3 && (
+            <span className="px-2 sm:px-3 py-1 bg-primary/10 rounded-full text-xs text-primary border border-primary/20">
+              <span className="hidden sm:inline">
+                +{accommodation.amenities.length - 3} more
+              </span>
+              <span className="sm:hidden">
+                +{accommodation.amenities.length - 3}
+              </span>
             </span>
           )}
         </div>
@@ -196,15 +210,16 @@ export function AccommodationCard({
               <a
                 href={`tel:${accommodation.phone}`}
                 className={cn(
-                  "flex-1 flex items-center justify-center space-x-2 py-2 px-4",
+                  "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
                   "bg-primary/10 text-primary rounded-lg border border-primary/20",
                   "hover:bg-primary/20 transition-colors duration-200",
-                  "focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  "focus:outline-none focus:ring-2 focus:ring-primary/50",
+                  "touch-manipulation"
                 )}
                 aria-label={`Call ${accommodation.name}`}
               >
                 <Phone className="h-4 w-4" />
-                <span className="text-sm font-medium">Call</span>
+                <span className="text-xs sm:text-sm font-medium">Call</span>
               </a>
             )}
 
@@ -212,15 +227,16 @@ export function AccommodationCard({
               <a
                 href={`mailto:${accommodation.email}`}
                 className={cn(
-                  "flex-1 flex items-center justify-center space-x-2 py-2 px-4",
+                  "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
                   "bg-secondary/10 text-secondary rounded-lg border border-secondary/20",
                   "hover:bg-secondary/20 transition-colors duration-200",
-                  "focus:outline-none focus:ring-2 focus:ring-secondary/50"
+                  "focus:outline-none focus:ring-2 focus:ring-secondary/50",
+                  "touch-manipulation"
                 )}
                 aria-label={`Email ${accommodation.name}`}
               >
                 <Mail className="h-4 w-4" />
-                <span className="text-sm font-medium">Email</span>
+                <span className="text-xs sm:text-sm font-medium">Email</span>
               </a>
             )}
           </div>

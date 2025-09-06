@@ -60,25 +60,35 @@ export function FilterPanel({
   };
 
   return (
-    <div className="flex items-center gap-2 mb-6">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2 mb-4 sm:mb-6">
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            Filters
-            {hasActiveFilters && (
-              <Badge variant="secondary" className="ml-1">
-                {
-                  Object.keys(filters).filter(
-                    (key) => filters[key as keyof SearchFilters] !== undefined
-                  ).length
-                }
-              </Badge>
-            )}
-            <ChevronDown className="h-4 w-4" />
+          <Button
+            variant="outline"
+            className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-center touch-manipulation"
+          >
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              <span className="text-sm sm:text-base">Filters</span>
+              {hasActiveFilters && (
+                <Badge variant="secondary" className="ml-1 text-xs">
+                  {
+                    Object.keys(filters).filter(
+                      (key) => filters[key as keyof SearchFilters] !== undefined
+                    ).length
+                  }
+                </Badge>
+              )}
+            </div>
+            <ChevronDown className="h-4 w-4 sm:ml-1" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-4" align="start">
+        <PopoverContent
+          className="w-[calc(100vw-2rem)] sm:w-80 p-4 mx-4 sm:mx-0"
+          align="start"
+          side="bottom"
+          sideOffset={8}
+        >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">Filters</h3>
@@ -160,30 +170,48 @@ export function FilterPanel({
 
       {/* Active Filter Badges */}
       {hasActiveFilters && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {filters.type && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Type: {filters.type}
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 text-xs sm:text-sm touch-manipulation"
+            >
+              <span className="hidden sm:inline">Type: </span>
+              <span className="sm:hidden">T: </span>
+              {filters.type}
               <X
-                className="h-3 w-3 cursor-pointer"
+                className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors"
                 onClick={() => onFiltersChange({ type: undefined })}
               />
             </Badge>
           )}
           {filters.verified && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              Verified Only
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 text-xs sm:text-sm touch-manipulation"
+            >
+              <span className="hidden sm:inline">Verified Only</span>
+              <span className="sm:hidden">Verified</span>
               <X
-                className="h-3 w-3 cursor-pointer"
+                className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors"
                 onClick={() => onFiltersChange({ verified: false })}
               />
             </Badge>
           )}
           {(filters.minPrice || filters.maxPrice) && (
-            <Badge variant="secondary" className="flex items-center gap-1">
-              ₹{filters.minPrice || 0} - ₹{filters.maxPrice || 50000}
+            <Badge
+              variant="secondary"
+              className="flex items-center gap-1 text-xs sm:text-sm touch-manipulation"
+            >
+              <span className="hidden sm:inline">
+                ₹{filters.minPrice || 0} - ₹{filters.maxPrice || 50000}
+              </span>
+              <span className="sm:hidden">
+                ₹{(filters.minPrice || 0) / 1000}K-₹
+                {(filters.maxPrice || 50000) / 1000}K
+              </span>
               <X
-                className="h-3 w-3 cursor-pointer"
+                className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors"
                 onClick={() =>
                   onFiltersChange({ minPrice: undefined, maxPrice: undefined })
                 }

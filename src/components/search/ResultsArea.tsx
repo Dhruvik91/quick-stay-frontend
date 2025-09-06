@@ -91,29 +91,31 @@ export function ResultsArea({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-text-primary">
-          Search Results
-          <span className="ml-3 text-sm font-normal text-text-secondary">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+          <h2 className="text-xl sm:text-2xl font-semibold text-text-primary">
+            Search Results
+          </h2>
+          <span className="text-sm font-normal text-text-secondary">
             {totalResults} {totalResults === 1 ? "result" : "results"} found
           </span>
-        </h2>
+        </div>
         {refetch && (
           <Button
             onClick={refetch}
             variant="ghost"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 self-start sm:self-auto touch-manipulation"
           >
             <RefreshCw className="h-4 w-4" />
-            Refresh
+            <span className="text-sm">Refresh</span>
           </Button>
         )}
       </div>
 
       <div
-        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         role="region"
         aria-label="Search results"
       >
@@ -128,19 +130,21 @@ export function ResultsArea({
 
       {/* Infinite scroll trigger */}
       {hasNextPage && (
-        <div ref={observerRef} className="flex justify-center py-8">
+        <div ref={observerRef} className="flex justify-center py-6 sm:py-8">
           {isFetchingNextPage ? (
-            <div className="flex items-center gap-2 text-text-secondary">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Loading more results...
+            <div className="flex items-center gap-2 text-text-secondary text-sm sm:text-base">
+              <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+              <span className="hidden sm:inline">Loading more results...</span>
+              <span className="sm:hidden">Loading...</span>
             </div>
           ) : (
             <Button
               onClick={fetchNextPage}
               variant="outline"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 touch-manipulation"
+              size="sm"
             >
-              Load More Results
+              <span className="text-sm">Load More Results</span>
             </Button>
           )}
         </div>
@@ -148,8 +152,10 @@ export function ResultsArea({
 
       {/* End of results */}
       {!hasNextPage && results.length > 0 && (
-        <div className="text-center py-8 text-text-secondary">
-          <p>You've reached the end of the results</p>
+        <div className="text-center py-6 sm:py-8 text-text-secondary">
+          <p className="text-sm sm:text-base">
+            You've reached the end of the results
+          </p>
         </div>
       )}
     </div>

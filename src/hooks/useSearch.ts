@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   AccommodationSearchParams,
@@ -18,6 +18,24 @@ export interface SearchFilters {
   location?: string;
   amenities?: string[];
 }
+
+// Custom hook for debouncing values
+// This prevents rapid API calls when users are adjusting range filters (like price)
+const useDebounce = <T>(value: T, delay: number): T => {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 interface UseAccommodationSearchOptions {
   searchParams: AccommodationSearchParams;
@@ -110,7 +128,13 @@ export const useSearch = () => {
     [searchState.query, filters]
   );
 
-  // Use the accommodation search hook
+  // Debounce search params to prevent rapid API calls when users adjust filters
+  // This is especially important for range filters (price, etc.) where users might
+  // drag sliders or type quickly, causing multiple rapid API calls
+  // Using 500ms delay to balance responsiveness with API call efficiency
+  const debouncedSearchParams = useDebounce(searchParams, 500);
+
+  // Use the accommodation search hook with debounced params
   const {
     accommodations,
     totalCount,
@@ -121,7 +145,7 @@ export const useSearch = () => {
     fetchNextPage,
     refetch,
   } = useAccommodationSearchResults({
-    searchParams,
+    searchParams: debouncedSearchParams,
     enabled:
       typeof window !== "undefined" &&
       searchState.hasSearched &&
