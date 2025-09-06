@@ -1,5 +1,22 @@
 import { SearchContainer } from "@/components/search/SearchContainer";
 import { Toaster } from "@/components/ui/sonner";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Find Your Perfect Accommodation",
+  description:
+    "Search and discover PG accommodations, rentals, hostels, and co-living spaces with our modern, intuitive platform. Find your perfect stay today with Quick Stay.",
+  openGraph: {
+    title: "Find Your Perfect Accommodation - Quick Stay",
+    description:
+      "Search and discover PG accommodations, rentals, hostels, and co-living spaces with our modern, intuitive platform.",
+    url: "https://quickstay.com",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://quickstay.com",
+  },
+};
 
 export default function Home() {
   return (
