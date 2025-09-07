@@ -10,7 +10,7 @@ export const InfoBanner = () => {
             Property owners who wish to list their properties can reach us at{" "}
             <a
               href="mailto:support@quickstay.com"
-              className="text-primary hover:text-primary/80 underline transition-colors"
+              className="text-primary hover:text-primary/80 underline transition-colors cursor-pointer"
             >
               support@quickstay.com
             </a>
