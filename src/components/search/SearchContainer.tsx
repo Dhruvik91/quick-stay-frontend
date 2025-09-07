@@ -6,6 +6,7 @@ import { ResultsArea } from "./ResultsArea";
 import { SuggestionCards } from "./SuggestionCards";
 import { FilterPanel } from "./FilterPanel";
 import { useSearch } from "@/hooks/useSearch";
+import { InfoBanner } from "../ui/InfoBanner";
 
 export function SearchContainer() {
   const {
@@ -46,8 +47,10 @@ export function SearchContainer() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 max-w-7xl">
+        {/* Info Banner */}
+        <InfoBanner/>
         {/* Header */}
-        <header className="text-center mb-6 sm:mb-8 md:mb-12">
+        <header className="text-center mb-6 sm:mb-8 md:mb-12 mt-5">
           <div className="mb-4 sm:mb-6">
             <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium mb-3 sm:mb-4">
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>

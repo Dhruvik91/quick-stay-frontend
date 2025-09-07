@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Logo } from "@/components/ui/Logo";
+import { InfoBanner } from "@/components/ui/InfoBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -85,6 +86,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
+
         {/* Top Navigation Bar */}
         <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
