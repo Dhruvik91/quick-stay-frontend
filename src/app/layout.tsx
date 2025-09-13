@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Logo } from "@/components/ui/Logo";
 import { InfoBanner } from "@/components/ui/InfoBanner";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -86,7 +87,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
-
         {/* Top Navigation Bar */}
         <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -94,7 +94,16 @@ export default function RootLayout({
           </div>
         </nav>
 
-        <QueryProvider>{children}</QueryProvider>
+        <div className="pb-16">
+          <QueryProvider>{children}</QueryProvider>
+        </div>
+
+        {/* Sticky Footer with InfoBanner */}
+        <footer className="sticky bottom-0 z-50 w-full bg-background">
+          <InfoBanner />
+        </footer>
+
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );
