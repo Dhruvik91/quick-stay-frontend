@@ -45,46 +45,59 @@ export function SearchContainer() {
   };
 
   return (
-    <div className="min-h-screen w-full relative">
+    <div className="min-h-screen w-full bg-[#020617] relative">
+      {/* Emerald Radial Glow Background */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `radial-gradient(circle 500px at 50% 300px, rgba(16,185,129,0.35), transparent)`,
+        }}
+      />
+      {/* Your Content/Components */}
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 max-w-7xl">
-        {/* Header */}
-        <SearchHeader />
-
-        {/* Search Section */}
-        <div className="max-w-4xl mx-auto mb-6 sm:mb-8 md:mb-12">
-          <SearchInput
-            value={inputValue}
-            onChange={setInputValue}
-            onSearch={handleSearch}
-            onClear={handleClear}
-            isLoading={isLoading}
-            placeholder="Search for PG, hostels, co-living spaces..."
-          />
+        <div className="min-h-[500px] flex flex-col items-center justify-between h-full">
+          {/* Header */}
+          <div className="h-96 flex flex-col items-center justify-center">
+            <SearchHeader />
+          </div>
+          {/* Search Section */}
+          <div className="max-w-4xl mx-auto mb-6 sm:mb-8 md:mb-12">
+            <SearchInput
+              value={inputValue}
+              onChange={setInputValue}
+              onSearch={handleSearch}
+              onClear={handleClear}
+              isLoading={isLoading}
+              placeholder="Search for PG, hostels, co-living spaces..."
+            />
+          </div>
         </div>
 
         {/* Results or Suggestions */}
-        {searchState.hasSearched ? (
-          <div className="space-y-4 sm:space-y-6">
-            <FilterPanel
-              filters={searchState.filters}
-              onFiltersChange={handleFiltersChange}
-              onClearFilters={handleClearFilters}
-            />
-            <ResultsArea
-              results={results}
-              totalResults={totalResults}
-              isLoading={isLoading}
-              error={error}
-              query={searchState.query}
-              hasNextPage={hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              fetchNextPage={fetchNextPage}
-              refetch={refetch}
-            />
-          </div>
-        ) : (
-          <SuggestionCards onSuggestionClick={handleSearch} />
-        )}
+        <div className="relative w-full">
+          {searchState.hasSearched ? (
+            <div className="space-y-4 sm:space-y-6">
+              <FilterPanel
+                filters={searchState.filters}
+                onFiltersChange={handleFiltersChange}
+                onClearFilters={handleClearFilters}
+              />
+              <ResultsArea
+                results={results}
+                totalResults={totalResults}
+                isLoading={isLoading}
+                error={error}
+                query={searchState.query}
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                fetchNextPage={fetchNextPage}
+                refetch={refetch}
+              />
+            </div>
+          ) : (
+            <SuggestionCards onSuggestionClick={handleSearch} />
+          )}
+        </div>
       </div>
     </div>
   );

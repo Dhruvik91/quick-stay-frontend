@@ -149,19 +149,19 @@ export function FilterPanel({
             <div className="space-y-2">
               <Label className="text-sm font-medium">
                 Price Range (₹{filters.minPrice || 0} - ₹
-                {filters.maxPrice || 50000})
+                {filters.maxPrice || 20000})
               </Label>
               <Slider
-                value={[filters.minPrice || 0, filters.maxPrice || 50000]}
+                value={[filters.minPrice || 0, filters.maxPrice || 20000]}
                 onValueChange={handlePriceRangeChange}
-                max={50000}
+                max={20000}
                 min={0}
                 step={1000}
                 className="w-full"
               />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>₹0</span>
-                <span>₹50,000</span>
+                <span>₹20,000</span>
               </div>
             </div>
           </div>
