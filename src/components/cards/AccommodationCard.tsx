@@ -153,7 +153,7 @@ export function AccommodationCard({
             </div>
           )}
 
-          {accommodation.rating && (
+          {/* {accommodation.rating && (
             <div className="flex items-center space-x-2">
               <div className="flex items-center">
                 <Star className="h-4 w-4 text-secondary fill-current" />
@@ -162,7 +162,7 @@ export function AccommodationCard({
                 </span>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Description */}

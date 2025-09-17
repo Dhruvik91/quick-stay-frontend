@@ -31,6 +31,12 @@ export function FilterPanel({
     { value: "Co-living", label: "Co-living" },
   ];
 
+  const propertyTypes = [
+    { value: "Boys", label: "Boys"},
+    { value: "Girls", label: "Girls"},
+    { value: "Both", label: "Both"}
+  ]
+
   const hasActiveFilters = Object.values(filters).some(
     (value) => value !== undefined
   );
@@ -40,6 +46,14 @@ export function FilterPanel({
       onFiltersChange({ type: type as SearchFilters["type"] });
     } else {
       onFiltersChange({ type: undefined });
+    }
+  };
+
+  const handlePropertyTypeChange = (type: string, checked: boolean) => {
+    if (checked) {
+      onFiltersChange({ propertyType: type as SearchFilters["propertyType"] });
+    } else {
+      onFiltersChange({ propertyType: undefined });
     }
   };
 
@@ -109,7 +123,7 @@ export function FilterPanel({
             {/* Accommodation Type */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">Accommodation Type</Label>
-              <div className="space-y-2">
+              <div className="flex items-center gap-3">
                 {accommodationTypes.map((type) => (
                   <div key={type.value} className="flex items-center space-x-2">
                     <Checkbox
@@ -117,6 +131,28 @@ export function FilterPanel({
                       checked={filters.type === type.value}
                       onCheckedChange={(checked) =>
                         handleTypeChange(type.value, checked as boolean)
+                      }
+                    />
+                    <Label htmlFor={type.value} className="text-sm">
+                      {type.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Property Type</Label>
+              <div className="flex items-center gap-3">
+                {propertyTypes.map((type) => (
+                  <div key={type.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={type.value}
+                      checked={filters.propertyType === type.value}
+                      onCheckedChange={(checked) =>
+                        handlePropertyTypeChange(type.value, checked as boolean)
                       }
                     />
                     <Label htmlFor={type.value} className="text-sm">
