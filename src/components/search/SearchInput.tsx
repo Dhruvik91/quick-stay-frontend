@@ -53,7 +53,7 @@ export function SearchInput({
     <div className="relative w-full">
       <div
         className={cn(
-          "relative flex items-center glass-card rounded-2xl transition-all duration-300",
+          "relative flex items-center glass-card rounded-2xl transition-all duration-300 max-sm:max-w-[350px]",
           "p-3 sm:p-4 md:p-6",
           isFocused && "ring-2 ring-primary/50 glow-effect",
           "hover:bg-surface/90"

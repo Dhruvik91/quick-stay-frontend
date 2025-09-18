@@ -12,6 +12,7 @@ import { API_CONFIG } from "@/constants";
 // Extended SearchFilters interface to match what the components expect
 export interface SearchFilters {
   type?: "PG" | "Rental" | "Hostel" | "Co-living";
+  propertyType?: "Boys" | "Girls" | "Both"
   verified?: boolean;
   minPrice?: number;
   maxPrice?: number;
@@ -121,6 +122,7 @@ export const useSearch = () => {
       search: searchState.query || undefined,
       type: filters.type,
       verified: filters.verified,
+      propertyType: filters.propertyType,
       minPrice: filters.minPrice,
       maxPrice: filters.maxPrice,
       limit: 10,
@@ -175,6 +177,7 @@ export const useSearch = () => {
   }, []);
 
   const clearSearch = useCallback(() => {
+    console.log("hello")
     setSearchState({
       query: "",
       results: [],
