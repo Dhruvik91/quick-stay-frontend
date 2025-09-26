@@ -214,7 +214,8 @@ export function AccommodationCard({
               <User className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
               <span className="text-sm leading-relaxed">
                 {accommodation.phone && `Phone: ${accommodation.phone}`}
-                {accommodation.phone && accommodation.email && " • "}
+              </span>
+              <span className="text-sm leading-relaxed">
                 {accommodation.email && `Email: ${accommodation.email}`}
               </span>
             </div>
@@ -253,8 +254,7 @@ export function AccommodationCard({
                 ) : typeof Icon === "string" ? (
                   <span className="text-xs">{Icon}</span>
                 ) : null}
-                <span className="hidden sm:inline">{amenity}</span>
-                <span className="sm:hidden">{amenity.charAt(0)}</span>
+                <span className="inline">{amenity}</span>
               </span>
             );
           })}
