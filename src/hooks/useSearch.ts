@@ -154,17 +154,9 @@ export const useSearch = () => {
       searchState.query.length > 0,
   });
 
-  // Update search state when query results change
-  useEffect(() => {
-    if (searchState.hasSearched) {
-      setSearchState((prev) => ({
-        ...prev,
-        results: accommodations,
-        isLoading,
-        error: error?.message || null,
-      }));
-    }
-  }, [accommodations, isLoading, error, searchState.hasSearched]);
+  // Note: We don't need to update searchState with query results here
+  // because the query results are already available directly from the hook
+  // and updating searchState would create a circular dependency
 
   const searchAccommodations = useCallback(async (query: string) => {
     setSearchState((prev) => ({
@@ -194,7 +186,13 @@ export const useSearch = () => {
   }, []);
 
   return {
-    searchState: { ...searchState, filters },
+    searchState: { 
+      ...searchState, 
+      filters,
+      results: accommodations,
+      isLoading,
+      error: error?.message || null,
+    },
     searchAccommodations,
     clearSearch,
     updateFilters,
