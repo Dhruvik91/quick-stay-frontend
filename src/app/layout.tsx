@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     images: ["https://www.quickstay.homes/og-image.jpg"],
   },
   verification: {
-    google: "your-google-verification-code",
+    google: "5PXvLWILhAf9I0H499SHg_KebXZ5XZRHi5r1JTPAZvo",
   },
   alternates: {
     canonical: "https://www.quickstay.homes/",
