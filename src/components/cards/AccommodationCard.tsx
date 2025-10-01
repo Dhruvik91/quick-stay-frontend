@@ -173,7 +173,7 @@ export function AccommodationCard({
         <div className="space-y-2">
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-lg sm:text-xl font-semibold text-text-primary group-hover:text-primary transition-colors duration-200 leading-tight">
-              {accommodation.name}
+              {accommodation.property_name}
             </h3>
             <span
               className={cn(
@@ -184,12 +184,6 @@ export function AccommodationCard({
               {accommodation.type}
             </span>
           </div>
-
-          {accommodation.property_name && (
-            <p className="text-sm sm:text-base text-text-secondary -mt-1">
-              {accommodation.property_name}
-            </p>
-          )}
 
           <div className="flex items-start text-text-secondary">
             <MapPin className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
@@ -212,12 +206,17 @@ export function AccommodationCard({
           {(accommodation.email || accommodation.phone) && (
             <div className="flex items-start text-text-secondary">
               <User className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
+              <div className="flex flex-col gap-1">
+              <span className="text-sm leading-relaxed">
+                {accommodation.name && `Owner: ${accommodation.name}`}
+              </span>
               <span className="text-sm leading-relaxed">
                 {accommodation.phone && `Phone: ${accommodation.phone}`}
               </span>
               <span className="text-sm leading-relaxed">
                 {accommodation.email && `Email: ${accommodation.email}`}
               </span>
+              </div>
             </div>
           )}
 
