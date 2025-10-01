@@ -9,11 +9,11 @@ export const metadata: Metadata = {
     title: "Find Your Perfect Accommodation - Quick Stay",
     description:
       "Search and discover PG accommodations, rentals, hostels, and co-living spaces with our modern, intuitive platform.",
-    url: "https://quickstay.com",
+    url: "https://www.quickstay.homes/",
     type: "website",
   },
   alternates: {
-    canonical: "https://quickstay.com",
+    canonical: "https://www.quickstay.homes/",
   },
 };
 

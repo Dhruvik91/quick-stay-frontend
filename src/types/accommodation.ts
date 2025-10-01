@@ -16,6 +16,12 @@ export interface Accommodation {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  /** Optional extended fields for richer UI rendering */
+  property_type?: "boys" | "girls" | "both";
+  /** If provided, shown distinctly from name */
+  property_name?: string;
+  /** Prefer this over image_url when present */
+  images?: string[];
 }
 
 export interface SearchFilters {

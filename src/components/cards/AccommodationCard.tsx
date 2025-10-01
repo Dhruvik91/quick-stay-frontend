@@ -16,6 +16,13 @@ import {
 } from "lucide-react";
 import { Accommodation } from "@/types/accommodation";
 import { cn } from "@/lib/utils";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface AccommodationCardProps {
   accommodation: Accommodation;
@@ -56,35 +63,65 @@ export function AccommodationCard({
     return colors[type];
   };
 
+  const getPropertyTypeBadge = (propertyType?: Accommodation["property_type"]) => {
+    if (!propertyType) return undefined;
+    const mapping: Record<string, string> = {
+      boys: "bg-blue-900 text-white border-blue-800",
+      girls: "bg-pink-900 text-white border-pink-800",
+      both: "bg-green-900 text-white border-green-800",
+    };
+    return mapping[propertyType] || "bg-foreground text-background";
+  };
+
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    accommodation.address || ""
+  )}`;
+
+  const imageList: string[] = Array.isArray(accommodation.images)
+    ? accommodation.images
+    : accommodation.image_url
+    ? [accommodation.image_url]
+    : [];
+
   return (
     <article
       className={cn(
         "glass-card rounded-xl overflow-hidden transition-all duration-300",
         "hover:scale-[1.02] hover:shadow-glass group animate-slide-up",
         "focus-within:ring-2 focus-within:ring-primary/50",
-        "h-full flex flex-col touch-manipulation"
+        "h-full flex flex-col touch-manipulation",
+        // subtle glass morphic background enhancement
+        "bg-background/60 backdrop-blur-md border border-border/40"
       )}
       style={{ animationDelay: `${animationDelay}s` }}
     >
       {/* Image Section */}
-      <div className="relative h-40 sm:h-48 overflow-hidden">
-        {accommodation.image_url && !imageError ? (
-          <>
-            <img
-              src={accommodation.image_url}
-              alt={`${accommodation.name} accommodation`}
-              className={cn(
-                "w-full h-full object-cover transition-all duration-500",
-                "group-hover:scale-110",
-                imageLoaded ? "opacity-100" : "opacity-0"
-              )}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-            />
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-surface animate-pulse" />
-            )}
-          </>
+      <div className="relative h-40 sm:h-56 overflow-hidden">
+        {imageList.length > 0 && !imageError ? (
+          <Carousel className="h-full">
+            <CarouselContent className="h-full">
+              {imageList.map((src, idx) => (
+                <CarouselItem key={`${src}-${idx}`} className="h-full">
+                  <img
+                    src={src}
+                    alt={`${accommodation.name} image ${idx + 1}`}
+                    className={cn(
+                      "w-full h-full object-cover transition-all duration-500",
+                      "group-hover:scale-110",
+                      imageLoaded ? "opacity-100" : "opacity-0"
+                    )}
+                    onLoad={() => setImageLoaded(true)}
+                    onError={() => setImageError(true)}
+                  />
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 bg-surface animate-pulse" />
+                  )}
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" aria-label="Previous image" />
+            <CarouselNext className="hidden sm:flex" aria-label="Next image" />
+          </Carousel>
         ) : (
           <div className="w-full h-full bg-surface flex items-center justify-center">
             <Home className="h-12 w-12 text-text-muted" />
@@ -102,18 +139,32 @@ export function AccommodationCard({
           )}
         </div>
 
-        {accommodation.price && (
-          <div className="absolute top-3 sm:top-4 right-3 sm:right-4 px-2 sm:px-3 py-1 bg-background/80 backdrop-blur-sm rounded-full z-10">
-            <span className="text-xs sm:text-sm font-semibold text-text-primary">
-              <span className="hidden sm:inline">
-                {formatPrice(accommodation.price)}/month
-              </span>
-              <span className="sm:hidden">
-                {formatPrice(accommodation.price)}
-              </span>
+        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex flex-col items-end gap-2 z-10">
+          {accommodation.property_type && (
+            <span
+              className={cn(
+                "px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold border shadow-md",
+                getPropertyTypeBadge(accommodation.property_type)
+              )}
+            >
+              {accommodation.property_type === "boys"
+                ? "Boys"
+                : accommodation.property_type === "girls"
+                ? "Girls"
+                : "Both"}
             </span>
-          </div>
-        )}
+          )}
+          {accommodation.price && (
+            <div className="px-2 sm:px-3 py-1 bg-background/80 backdrop-blur-sm rounded-full">
+              <span className="text-xs sm:text-sm font-semibold text-text-primary">
+                <span className="hidden sm:inline">
+                  {formatPrice(accommodation.price)}/month
+                </span>
+                <span className="sm:hidden">{formatPrice(accommodation.price)}</span>
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content Section */}
@@ -122,7 +173,7 @@ export function AccommodationCard({
         <div className="space-y-2">
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-lg sm:text-xl font-semibold text-text-primary group-hover:text-primary transition-colors duration-200 leading-tight">
-              {accommodation.name}
+              {accommodation.property_name}
             </h3>
             <span
               className={cn(
@@ -138,6 +189,16 @@ export function AccommodationCard({
             <MapPin className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
             <span className="text-sm leading-relaxed">
               {accommodation.address}
+              {" "}
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 underline text-primary hover:text-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded"
+                aria-label={`Open ${accommodation.name} location in Google Maps`}
+              >
+                View on map
+              </a>
             </span>
           </div>
 
@@ -145,11 +206,17 @@ export function AccommodationCard({
           {(accommodation.email || accommodation.phone) && (
             <div className="flex items-start text-text-secondary">
               <User className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
+              <div className="flex flex-col gap-1">
+              <span className="text-sm leading-relaxed">
+                {accommodation.name && `Owner: ${accommodation.name}`}
+              </span>
               <span className="text-sm leading-relaxed">
                 {accommodation.phone && `Phone: ${accommodation.phone}`}
-                {accommodation.phone && accommodation.email && " • "}
+              </span>
+              <span className="text-sm leading-relaxed">
                 {accommodation.email && `Email: ${accommodation.email}`}
               </span>
+              </div>
             </div>
           )}
 
@@ -186,8 +253,7 @@ export function AccommodationCard({
                 ) : typeof Icon === "string" ? (
                   <span className="text-xs">{Icon}</span>
                 ) : null}
-                <span className="hidden sm:inline">{amenity}</span>
-                <span className="sm:hidden">{amenity.charAt(0)}</span>
+                <span className="inline">{amenity}</span>
               </span>
             );
           })}
