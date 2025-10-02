@@ -32,7 +32,7 @@ function parseIdFromSlug(slug: string): string | null {
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const id = parseIdFromSlug(params.slug);
   if (!id) return { title: "Accommodation" };
-  const data = await fetchById(id);
+  const data = dummyAccommodations.find((a) => a.slug === params.slug);
   if (!data) return { title: "Accommodation" };
 
   const title = `${data.property_name || data.name} (${data.type})`;

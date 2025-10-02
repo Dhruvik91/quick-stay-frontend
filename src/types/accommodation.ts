@@ -22,6 +22,7 @@ export interface Accommodation {
   property_name?: string;
   /** Prefer this over image_url when present */
   images?: string[];
+  slug?: string
 }
 
 export interface SearchFilters {

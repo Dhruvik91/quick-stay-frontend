@@ -58,9 +58,9 @@ export function AccommodationCard({
       .replace(/-+/g, "-");
 
   const buildShareUrl = () => {
-    const name = accommodation.property_name || accommodation.name;
-    const slug = `${slugify(name)}-${accommodation.id}`;
     const origin = typeof window !== "undefined" && window.location?.origin ? window.location.origin : "";
+    // Use the slug field if available, otherwise generate one
+    const slug = accommodation.slug || `${slugify(accommodation.property_name || accommodation.name)}-${accommodation.id}`;
     return `${origin}/accomodations/${slug}`;
   };
 
@@ -206,15 +206,6 @@ export function AccommodationCard({
               </span>
             </div>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onShare}
-            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm border border-border/40 hover:bg-background"
-            aria-label={`Share ${accommodation.property_name || accommodation.name}`}
-          >
-            <Share2 className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
@@ -321,43 +312,56 @@ export function AccommodationCard({
         </div>
 
         {/* Contact Actions */}
-        {(accommodation.phone || accommodation.email) && (
-          <div className="flex space-x-2 pt-2 mt-auto">
-            {accommodation.phone && (
-              <a
-                href={`tel:${accommodation.phone}`}
-                className={cn(
-                  "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
-                  "bg-primary/10 text-primary rounded-lg border border-primary/20",
-                  "hover:bg-primary/20 transition-colors duration-200",
-                  "focus:outline-none focus:ring-2 focus:ring-primary/50",
-                  "touch-manipulation"
-                )}
-                aria-label={`Call ${accommodation.name}`}
-              >
-                <Phone className="h-4 w-4" />
-                <span className="text-xs sm:text-sm font-medium">Call</span>
-              </a>
-            )}
+        <div className="flex space-x-2 pt-2 mt-auto">
+          {accommodation.phone && (
+            <a
+              href={`tel:${accommodation.phone}`}
+              className={cn(
+                "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
+                "bg-primary/10 text-primary rounded-lg border border-primary/20",
+                "hover:bg-primary/20 transition-colors duration-200",
+                "focus:outline-none focus:ring-2 focus:ring-primary/50",
+                "touch-manipulation"
+              )}
+              aria-label={`Call ${accommodation.name}`}
+            >
+              <Phone className="h-4 w-4" />
+              <span className="text-xs sm:text-sm font-medium">Call</span>
+            </a>
+          )}
 
-            {accommodation.email && (
-              <a
-                href={`mailto:${accommodation.email}`}
-                className={cn(
-                  "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
-                  "bg-secondary/10 text-secondary rounded-lg border border-secondary/20",
-                  "hover:bg-secondary/20 transition-colors duration-200",
-                  "focus:outline-none focus:ring-2 focus:ring-secondary/50",
-                  "touch-manipulation"
-                )}
-                aria-label={`Email ${accommodation.name}`}
-              >
-                <Mail className="h-4 w-4" />
-                <span className="text-xs sm:text-sm font-medium">Email</span>
-              </a>
+          {accommodation.email && (
+            <a
+              href={`mailto:${accommodation.email}`}
+              className={cn(
+                "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
+                "bg-secondary/10 text-secondary rounded-lg border border-secondary/20",
+                "hover:bg-secondary/20 transition-colors duration-200",
+                "focus:outline-none focus:ring-2 focus:ring-secondary/50",
+                "touch-manipulation"
+              )}
+              aria-label={`Email ${accommodation.name}`}
+            >
+              <Mail className="h-4 w-4" />
+              <span className="text-xs sm:text-sm font-medium">Email</span>
+            </a>
+          )}
+
+          <button
+            onClick={onShare}
+            className={cn(
+              "flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 px-3 sm:px-4",
+              "bg-info/10 text-info rounded-lg border border-info/20",
+              "hover:bg-info/20 transition-colors duration-200",
+              "focus:outline-none focus:ring-2 focus:ring-info/50",
+              "touch-manipulation"
             )}
-          </div>
-        )}
+            aria-label={`Share ${accommodation.property_name || accommodation.name}`}
+          >
+            <Share2 className="h-4 w-4" />
+            <span className="text-xs sm:text-sm font-medium">Share</span>
+          </button>
+        </div>
       </div>
     </article>
   );
