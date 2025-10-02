@@ -13,6 +13,7 @@ import {
   Dumbbell,
   Home,
   User,
+  Share2,
 } from "lucide-react";
 import { Accommodation } from "@/types/accommodation";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface AccommodationCardProps {
   accommodation: Accommodation;
@@ -44,6 +47,45 @@ export function AccommodationCard({
 }: AccommodationCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const slugify = (text: string) =>
+    text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+
+  const buildShareUrl = () => {
+    const name = accommodation.property_name || accommodation.name;
+    const slug = `${slugify(name)}-${accommodation.id}`;
+    const origin = typeof window !== "undefined" && window.location?.origin ? window.location.origin : "";
+    return `${origin}/accomodations/${slug}`;
+  };
+
+  const onShare = async () => {
+    try {
+      const url = buildShareUrl();
+      if (navigator.share && typeof navigator.share === "function") {
+        await navigator.share({ title: accommodation.property_name || accommodation.name, url });
+      } else if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied");
+      } else {
+        // Fallback: create temporary input
+        const input = document.createElement("input");
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        toast.success("Link copied");
+      }
+    } catch (e) {
+      toast.error("Failed to share link");
+    }
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -164,6 +206,15 @@ export function AccommodationCard({
               </span>
             </div>
           )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onShare}
+            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm border border-border/40 hover:bg-background"
+            aria-label={`Share ${accommodation.property_name || accommodation.name}`}
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
