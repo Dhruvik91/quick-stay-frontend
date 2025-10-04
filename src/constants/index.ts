@@ -5,6 +5,7 @@ export const API_CONFIG = {
   path: {
     users: "/users",
     accommodations: "/accommodations",
+    uploads: "/uploads/images/public",
   },
 };
 
