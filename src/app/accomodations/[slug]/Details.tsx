@@ -84,8 +84,6 @@ export default function Details({ data }: { data: Accommodation }) {
   
   const images: string[] = Array.isArray(data.images)
     ? data.images
-    : data.image_url
-    ? [data.image_url]
     : [];
 
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(

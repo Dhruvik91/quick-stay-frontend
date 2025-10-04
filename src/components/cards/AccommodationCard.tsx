@@ -121,8 +121,6 @@ export function AccommodationCard({
 
   const imageList: string[] = Array.isArray(accommodation.images)
     ? accommodation.images
-    : accommodation.image_url
-    ? [accommodation.image_url]
     : [];
 
   return (

@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
   const title = `${data.property_name || data.name} (${data.type})`;
   const description = data.description || `${data.name} - ${data.address}`;
-  const image = (Array.isArray(data.images) && data.images[0]) || data.image_url || undefined;
+  const image = (Array.isArray(data.images) && data.images[0]) || undefined;
   const url = `https://www.quickstay.homes/accomodations/${params.slug}`;
 
   return {
