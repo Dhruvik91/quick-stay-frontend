@@ -9,36 +9,28 @@ type PageParams = {
   params: { slug: string };
 };
 
-async function fetchById(id: string): Promise<Accommodation | null> {
+async function fetchBySlug(slug: string): Promise<Accommodation | null> {
   try {
     if (!API_CONFIG.baseUrl) throw new Error("No API baseUrl");
-    const res = await http.get<Accommodation>(`${API_CONFIG.path.accommodations}/${id}`);
+    const res = await http.get<Accommodation>(`${API_CONFIG.path.users}/${slug}`);
     return (res.data?.data as any) || null;
   } catch {
     // Fallback to dummy data
-    const item = dummyAccommodations.find((a) => a.id === id) || null;
+    const item = dummyAccommodations.find((a) => a.slug === slug) || null;
     return item as unknown as Accommodation | null;
   }
 }
 
-function parseIdFromSlug(slug: string): string | null {
-  // Expecting pattern: some-name-<id>
-  const parts = slug.split("-");
-  const id = parts.pop();
-  if (!id) return null;
-  return id;
-}
-
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
-  const id = parseIdFromSlug(params.slug);
-  if (!id) return { title: "Accommodation" };
-  const data = dummyAccommodations.find((a) => a.slug === params.slug);
+  const slug = params.slug;
+  if (!slug) return { title: "Accommodation" };
+  const data = await fetchBySlug(slug)
   if (!data) return { title: "Accommodation" };
 
   const title = `${data.property_name || data.name} (${data.type})`;
   const description = data.description || `${data.name} - ${data.address}`;
   const image = (Array.isArray(data.images) && data.images[0]) || undefined;
-  const url = `https://www.quickstay.homes/accomodations/${params.slug}`;
+  const url = `https://www.quickstay.homes/accomodations/${slug}`;
 
   return {
     title,
@@ -70,9 +62,9 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 }
 
 export default async function Page({ params }: PageParams) {
-  const id = parseIdFromSlug(params.slug);
-  if (!id) return notFound();
-  const data = await fetchById(id);
+  const slug = params.slug;
+  if (!slug) return notFound();
+  const data = await fetchBySlug(slug);
   if (!data) return notFound();
   return <Details data={data} />;
 }

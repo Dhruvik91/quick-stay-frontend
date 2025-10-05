@@ -6,10 +6,10 @@ import { Logo } from "@/components/ui/Logo";
 import { InfoBanner } from "@/components/ui/InfoBanner";
 import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = Inter( {
+  subsets: [ "latin" ],
   variable: "--font-inter",
-});
+} );
 
 export const metadata: Metadata = {
   title: {
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "student housing",
     "shared living",
   ],
-  authors: [{ name: "Quick Stay" }],
+  authors: [ { name: "Quick Stay" } ],
   creator: "Quick Stay",
   publisher: "Quick Stay",
   robots: {
@@ -67,8 +67,8 @@ export const metadata: Metadata = {
     description:
       "Search and discover PG accommodations, rentals, hostels, and co-living spaces with our modern, intuitive platform.",
     creator: "@quickstay",
-    site: "@quickstay",
-    images: ["https://www.quickstay.homes/og-image.jpg"],
+    site: "Quick Stay",
+    images: [ "https://www.quickstay.homes/og-image.jpg" ],
   },
   verification: {
     google: "5PXvLWILhAf9I0H499SHg_KebXZ5XZRHi5r1JTPAZvo",
@@ -76,29 +76,30 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.quickstay.homes/",
   },
-  category: "travel",
+  category: "accomodations, hotel, PGs, rentals, hostels, co-living",
 };
 
-export default function RootLayout({
+export default function RootLayout ( {
   children,
 }: {
   children: React.ReactNode;
-}) {
+} )
+{
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        {/* Top Navigation Bar */}
+      <body className={ `${ inter.variable } font-sans antialiased` }>
+        {/* Top Navigation Bar */ }
         <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-            <Logo size="md" showText={true} />
+            <Logo size="md" showText={ true } />
           </div>
         </nav>
 
         <div>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>{ children }</QueryProvider>
         </div>
 
-        {/* Sticky Footer with InfoBanner */}
+        {/* Sticky Footer with InfoBanner */ }
         <footer className="sticky bottom-0 z-50 w-full bg-background">
           <InfoBanner />
         </footer>
