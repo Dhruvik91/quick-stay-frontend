@@ -6,7 +6,6 @@ export interface Accommodation {
   price: number;
   rating: number;
   description: string;
-  image_url: string;
   verified: boolean;
   amenities: string[];
   email: string;
@@ -22,6 +21,7 @@ export interface Accommodation {
   property_name?: string;
   /** Prefer this over image_url when present */
   images?: string[];
+  slug?: string
 }
 
 export interface SearchFilters {
